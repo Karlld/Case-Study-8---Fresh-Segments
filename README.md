@@ -1,5 +1,6 @@
 **Case-Study-8---Fresh-Segments**
 
+
 **Introduction**
 
 Danny created Fresh Segments, a digital marketing agency that helps other businesses analyse trends in online ad click behaviour for their unique customer base.
@@ -10,9 +11,11 @@ In particular - the composition and rankings for different interests are provide
 
 Danny has asked for your assistance to analyse aggregated metrics for an example client and provide some high level insights about the customer list and their interests.
 
+
 **Available Data**
 
 For this case study there is a total of 2 datasets which you will need to use to solve the questions.
+
 
 **Interest Metrics**
 
@@ -44,6 +47,7 @@ In July 2018, the composition metric is 11.89, meaning that 11.89% of the client
 The index_value is 6.19, means that the composition value is 6.19x the average composition value for all Fresh Segments clients’ customer for this particular interest in the month of July 2018.
 
 The ranking and percentage_ranking relates to the order of index_value records in each month year.
+
 
 **Interest Map**
 
