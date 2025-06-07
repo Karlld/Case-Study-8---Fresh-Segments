@@ -121,4 +121,59 @@ SELECT me.*,
 | 2 |	2019 |	2019-02-01 |	21246 |	1.84 |	0.68 |	1109 |	1.07 |	Readers of El Salvadoran Content |	People reading news from El Salvadoran media sources. |	2018-06-11 17:50:04 |	2018-06-11 17:50:04 |
 | 3 |	2019  | 2019-03-01 |	21246 |	1.75 |	0.67 |	1123 |	1.14 |	Readers of El Salvadoran Content |	People reading news from El Salvadoran media sources. |	2018-06-11 17:50:04 |	2018-06-11 17:50:04 |
 | 4 |	2019 |	2019-04-01 |	21246 |	1.58 |	0.63 |	1092 |	0.64	 | Readers of El Salvadoran Content |  People reading news from El Salvadoran media sources. |	2018-06-11 17:50:04 |	2018-06-11 17:50:04 |
-			
+
+
+Are there any records in your joined table where the month_year value is before the created_at value from the fresh_segments.interest_map table? Do you think these values are valid and why?
+
+```sql
+SELECT COUNT(me.month_year) AS total_pre_date
+   FROM interest_metrics AS me
+        LEFT JOIN interest_map AS ma ON ma.id = me.interest_id:: INT 
+		WHERE me.month_year < ma.created_at;
+```
+
+| total_pre_date |
+|----------------|
+| 188 |
+
+The month_year column was earlier modified to include a day value, which was set to the first across all rows. This may contribute to the result that was just produced, if the same check is run again but only comparing the month values there will be a more accurate result.
+
+```sql
+SELECT COUNT(me.month_year) AS total_pre_date
+FROM interest_metrics AS me
+LEFT JOIN interest_map AS ma ON ma.id = me.interest_id::int
+WHERE me.month_year < DATE_TRUNC('month', ma.created_at);
+```
+
+| total_pre_date |
+|----------------|
+| 0 |
+
+This result shows that the values are valid and can be kept in further queries.
+
+**Interest Analysis**
+
+Which interests have been present in all month_year dates in our dataset?
+
+```sql
+WITH unique_interest AS (SELECT interest_id,
+       COUNT(DISTINCT (interest_id, month_year)) AS unique_interest
+FROM interest_metrics
+GROUP BY interest_id),
+
+total_month_year AS (SELECT COUNT(DISTINCT(month_year)) AS total_month_year
+FROM interest_metrics
+WHERE month_year NOTNULL),
+
+present_amt AS( SELECT unique_interest/total_month_year AS present_amt
+ FROM unique_interest, total_month_year)
+ 
+ SELECT COUNT(present_amt) AS present_all
+ FROM present_amt
+ WHERE present_amt = 1;
+```
+
+| present_all |
+|-------------|
+| 480 |
+
